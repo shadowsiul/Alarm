@@ -30,16 +30,19 @@ class AlarmRingtoneService : Service() {
         val alarmId = intent?.getLongExtra(AlarmScheduler.EXTRA_ALARM_ID, -1L) ?: -1L
         when (intent?.action) {
             ACTION_DISMISS -> {
-                stopSelf()
+                stopAlarmSound()
+                AlarmNotifications.ringing = false
                 if (alarmId >= 0) {
                     scope.launch(Dispatchers.IO) {
                         AlarmRepository(this@AlarmRingtoneService).disableOneShot(alarmId)
                     }
                 }
+                stopSelf()
                 return START_NOT_STICKY
             }
             ACTION_SNOOZE -> {
                 stopAlarmSound()
+                AlarmNotifications.ringing = false
                 if (alarmId >= 0) snooze(alarmId)
                 stopSelf()
                 return START_NOT_STICKY
@@ -47,6 +50,8 @@ class AlarmRingtoneService : Service() {
         }
 
         currentAlarmId = alarmId
+        AlarmNotifications.ringing = true
+        AlarmNotifications.cancelUpcoming(this)
         AlarmNotifications.ensureChannel(this)
         startForeground(
             AlarmNotifications.RINGING_NOTIFICATION_ID,
@@ -122,21 +127,10 @@ class AlarmRingtoneService : Service() {
     }
 
     private fun snooze(alarmId: Long) {
-        val scheduler = AlarmScheduler(this)
         val triggerAt = System.currentTimeMillis() + 10 * 60 * 1000
-        val intent = Intent(this, AlarmReceiver::class.java).apply {
-            action = AlarmScheduler.ACTION_FIRE
-            putExtra(AlarmScheduler.EXTRA_ALARM_ID, alarmId)
+        scope.launch(Dispatchers.IO) {
+            AlarmRepository(this@AlarmRingtoneService).setSnooze(alarmId, triggerAt)
         }
-        val pending = android.app.PendingIntent.getBroadcast(
-            this,
-            (alarmId + 50_000).toInt(),
-            intent,
-            android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE,
-        )
-        val am = getSystemService(ALARM_SERVICE) as android.app.AlarmManager
-        am.setAlarmClock(android.app.AlarmManager.AlarmClockInfo(triggerAt, pending), pending)
-        scheduler.scheduleHolidayRefresh()
     }
 
     private fun stopAlarmSound() {
@@ -151,6 +145,7 @@ class AlarmRingtoneService : Service() {
 
     override fun onDestroy() {
         stopAlarmSound()
+        AlarmNotifications.ringing = false
         scope.cancel()
         super.onDestroy()
     }

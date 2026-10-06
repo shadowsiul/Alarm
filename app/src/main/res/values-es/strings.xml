@@ -2,6 +2,15 @@
     <string name="app_name">Alarma</string>
     <string name="channel_alarm_name">Alarmas</string>
     <string name="channel_alarm_desc">Se muestra cuando suena una alarma</string>
+    <string name="channel_upcoming_name">Próxima alarma</string>
+    <string name="channel_upcoming_desc">Muestra la próxima alarma para omitirla o apagarla</string>
+    <string name="upcoming_title">Alarma a las %1$s</string>
+    <string name="upcoming_fallback">Próxima alarma</string>
+    <string name="skip_this_time">Omitir esta vez</string>
+    <string name="turn_off">Apagar</string>
+    <string name="upcoming_section">Notificación</string>
+    <string name="upcoming_notification">Mostrar la próxima alarma</string>
+    <string name="upcoming_notification_hint">Mantén la próxima alarma en el área de notificaciones para omitirla o apagarla antes de que suene.</string>
 
     <string name="tab_alarms">Alarmas</string>
     <string name="tab_options">Opciones</string>

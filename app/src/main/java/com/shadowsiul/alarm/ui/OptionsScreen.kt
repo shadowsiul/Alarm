@@ -19,10 +19,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -38,6 +42,9 @@ import java.time.format.FormatStyle
 @Composable
 fun OptionsScreen(
     onBack: () -> Unit,
+    showUpcomingNotification: Boolean,
+    onShowUpcomingNotificationChange: (Boolean) -> Unit,
+    onLanguageSelected: (AppLanguage) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val year = LocalDate.now().year
@@ -45,6 +52,7 @@ fun OptionsScreen(
     val holidays = remember(year) { UsFederalHolidays.holidaysForYear(year) }
     val dateFormat = remember { DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM) }
     val selectedLanguage = AppLanguage.current()
+    var upcomingEnabled by remember { mutableStateOf(showUpcomingNotification) }
 
     Scaffold(
         modifier = modifier,
@@ -88,10 +96,40 @@ fun OptionsScreen(
                     AppLanguage.entries.forEach { language ->
                         FilterChip(
                             selected = language == selectedLanguage,
-                            onClick = { AppLanguage.apply(language) },
+                            onClick = { onLanguageSelected(language) },
                             label = { Text(language.nativeLabel) },
                         )
                     }
+                }
+            }
+            item {
+                Text(
+                    stringResource(R.string.upcoming_section),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(top = 8.dp),
+                )
+                Text(
+                    stringResource(R.string.upcoming_notification_hint),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 4.dp, bottom = 8.dp),
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        stringResource(R.string.upcoming_notification),
+                        modifier = Modifier.weight(1f),
+                    )
+                    Switch(
+                        checked = upcomingEnabled,
+                        onCheckedChange = {
+                            upcomingEnabled = it
+                            onShowUpcomingNotificationChange(it)
+                        },
+                    )
                 }
             }
             item {

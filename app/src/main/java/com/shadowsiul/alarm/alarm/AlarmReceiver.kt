@@ -4,11 +4,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.shadowsiul.alarm.data.AlarmRepository
-import com.shadowsiul.alarm.holiday.UsFederalHolidays
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 
 class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -20,21 +18,20 @@ class AlarmReceiver : BroadcastReceiver() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val repo = AlarmRepository(context)
-                val alarm = repo.getAlarm(id) ?: return@launch
-                if (!alarm.enabled) return@launch
-
-                if (UsFederalHolidays.isHoliday(LocalDate.now()) && !alarm.ringOnHolidays) {
-                    repo.rescheduleAll()
-                    return@launch
-                }
-
+                val alarm = repo.onFired(id) ?: return@launch
                 AlarmNotifications.ensureChannel(context)
-                context.startForegroundService(
-                    Intent(context, AlarmRingtoneService::class.java).apply {
-                        putExtra(AlarmScheduler.EXTRA_ALARM_ID, id)
-                    },
-                )
-                AlarmScheduler(context).schedule(alarm)
+                try {
+                    AlarmNotifications.ringing = true
+                    AlarmNotifications.cancelUpcoming(context)
+                    context.startForegroundService(
+                        Intent(context, AlarmRingtoneService::class.java).apply {
+                            putExtra(AlarmScheduler.EXTRA_ALARM_ID, alarm.id)
+                        },
+                    )
+                } catch (_: Exception) {
+                    AlarmNotifications.ringing = false
+                    repo.refreshUpcomingNotification()
+                }
             } finally {
                 pendingResult.finish()
             }

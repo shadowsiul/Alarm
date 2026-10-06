@@ -2,6 +2,15 @@
     <string name="app_name">闹钟</string>
     <string name="channel_alarm_name">闹钟</string>
     <string name="channel_alarm_desc">闹钟响铃时显示</string>
+    <string name="channel_upcoming_name">下一个闹钟</string>
+    <string name="channel_upcoming_desc">显示下一个闹钟，以便提前跳过或关闭</string>
+    <string name="upcoming_title">闹钟 %1$s</string>
+    <string name="upcoming_fallback">下一个闹钟</string>
+    <string name="skip_this_time">跳过这次</string>
+    <string name="turn_off">关闭</string>
+    <string name="upcoming_section">通知</string>
+    <string name="upcoming_notification">显示下一个闹钟</string>
+    <string name="upcoming_notification_hint">在通知栏显示下一个闹钟，以便在响铃前跳过或关闭。</string>
 
     <string name="tab_alarms">闹钟</string>
     <string name="tab_options">选项</string>

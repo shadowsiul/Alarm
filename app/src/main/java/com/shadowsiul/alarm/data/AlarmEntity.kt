@@ -16,6 +16,10 @@ data class AlarmEntity(
     val soundName: String = "Default",
     val vibrate: Boolean = true,
     val ringOnHolidays: Boolean = false,
+    /** Next trigger must be after this instant. Used to skip the upcoming occurrence. */
+    val skipAfterMillis: Long = 0,
+    /** If in the future, this alarm should fire at this time (snooze). */
+    val snoozeUntilMillis: Long = 0,
 ) {
     fun repeatsOn(calendarDay: Int): Boolean {
         val bit = 1 shl (calendarDay - 1)

@@ -11,19 +11,26 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.shadowsiul.alarm.AlarmApp
+import com.shadowsiul.alarm.data.AlarmPreferences
 import com.shadowsiul.alarm.ui.theme.AlarmTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions(),
-    ) { }
+    ) {
+        refreshUpcomingNotification()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +51,12 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
                     composable("options") {
-                        OptionsScreen(onBack = { nav.popBackStack() })
+                        OptionsScreen(
+                            onBack = { nav.popBackStack() },
+                            showUpcomingNotification = AlarmPreferences.showUpcomingNotification(this@MainActivity),
+                            onShowUpcomingNotificationChange = vm::setShowUpcomingNotification,
+                            onLanguageSelected = vm::setLanguage,
+                        )
                     }
                     composable(
                         route = "edit/{id}",
@@ -59,6 +71,17 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        refreshUpcomingNotification()
+    }
+
+    private fun refreshUpcomingNotification() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            (application as AlarmApp).repository.refreshUpcomingNotification()
         }
     }
 

@@ -2,6 +2,15 @@
     <string name="app_name">Alarm</string>
     <string name="channel_alarm_name">Alarms</string>
     <string name="channel_alarm_desc">Fires when an alarm is ringing</string>
+    <string name="channel_upcoming_name">Upcoming alarm</string>
+    <string name="channel_upcoming_desc">Shows the next alarm so you can skip or turn it off</string>
+    <string name="upcoming_title">Alarm at %1$s</string>
+    <string name="upcoming_fallback">Next alarm</string>
+    <string name="skip_this_time">Skip this time</string>
+    <string name="turn_off">Turn off</string>
+    <string name="upcoming_section">Notification</string>
+    <string name="upcoming_notification">Show next alarm</string>
+    <string name="upcoming_notification_hint">Keep the next alarm in the notification shade so you can skip it or turn it off before it rings.</string>
 
     <string name="tab_alarms">Alarms</string>
     <string name="tab_options">Options</string>

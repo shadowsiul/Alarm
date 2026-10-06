@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.shadowsiul.alarm.AlarmApp
 import com.shadowsiul.alarm.data.AlarmEntity
+import com.shadowsiul.alarm.data.AlarmPreferences
 import com.shadowsiul.alarm.holiday.UsFederalHolidays
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -30,6 +31,16 @@ class AlarmViewModel(application: Application) : AndroidViewModel(application) {
 
     fun setEnabled(alarm: AlarmEntity, enabled: Boolean) {
         viewModelScope.launch { repo.setEnabled(alarm, enabled) }
+    }
+
+    fun setShowUpcomingNotification(show: Boolean) {
+        AlarmPreferences.setShowUpcomingNotification(getApplication(), show)
+        viewModelScope.launch { repo.refreshUpcomingNotification() }
+    }
+
+    fun setLanguage(language: AppLanguage) {
+        AppLanguage.apply(language)
+        viewModelScope.launch { repo.refreshUpcomingNotification() }
     }
 
     suspend fun alarmById(id: Long): AlarmEntity? = repo.getAlarm(id)
