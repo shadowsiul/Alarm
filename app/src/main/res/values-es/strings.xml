@@ -3,14 +3,15 @@
     <string name="channel_alarm_name">Alarmas</string>
     <string name="channel_alarm_desc">Se muestra cuando suena una alarma</string>
     <string name="channel_upcoming_name">Próxima alarma</string>
-    <string name="channel_upcoming_desc">Muestra la próxima alarma para omitirla o apagarla</string>
+    <string name="channel_upcoming_desc">Muestra la próxima alarma para descartarla o apagarla</string>
     <string name="upcoming_title">Alarma a las %1$s</string>
     <string name="upcoming_fallback">Próxima alarma</string>
-    <string name="skip_this_time">Omitir esta vez</string>
     <string name="turn_off">Apagar</string>
     <string name="upcoming_section">Notificación</string>
     <string name="upcoming_notification">Mostrar la próxima alarma</string>
-    <string name="upcoming_notification_hint">Mantén la próxima alarma en el área de notificaciones para omitirla o apagarla antes de que suene.</string>
+    <string name="upcoming_notification_hint">Mantén la próxima alarma en el área de notificaciones para descartarla o apagarla antes de que suene.</string>
+    <string name="backup_section">Copia de seguridad</string>
+    <string name="backup_hint">Las alarmas se guardan en Descargas (shadowsiul-alarms.json) y en la copia de Google, para que puedan volver tras desinstalar si la copia está activa.</string>
 
     <string name="tab_alarms">Alarmas</string>
     <string name="tab_options">Opciones</string>
@@ -62,7 +63,6 @@
     <string name="holidays_section">Festivos federales de EE. UU.</string>
     <string name="holidays_hint">Las alarmas se silencian en estas fechas observadas, salvo que Sonar en festivos esté activado.</string>
     <string name="holiday_today">Hoy</string>
-    <string name="holidays_year">%1$d</string>
 
     <string name="holiday_new_year">Día de Año Nuevo</string>
     <string name="holiday_mlk">Cumpleaños de Martin Luther King, Jr.</string>

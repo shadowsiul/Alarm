@@ -31,7 +31,7 @@ class AlarmScheduler(private val context: Context) {
 
     fun scheduleHolidayRefresh() {
         val now = ZonedDateTime.now()
-        var nextMidnight = now.toLocalDate().plusDays(1).atStartOfDay(now.zone).plusMinutes(1)
+        val nextMidnight = now.toLocalDate().plusDays(1).atStartOfDay(now.zone).plusMinutes(1)
         val intent = Intent(context, HolidayRefreshReceiver::class.java)
         val pending = PendingIntent.getBroadcast(
             context,
@@ -46,16 +46,8 @@ class AlarmScheduler(private val context: Context) {
         )
     }
 
-    fun nextTriggerMillis(alarm: AlarmEntity, from: ZonedDateTime = ZonedDateTime.now()): Long? {
-        return nextTrigger(alarm, from)?.toInstant()?.toEpochMilli()
-    }
-
     fun nextFireMillis(alarm: AlarmEntity, from: ZonedDateTime = ZonedDateTime.now()): Long? {
         return AlarmTimes.nextFire(alarm, from)?.toInstant()?.toEpochMilli()
-    }
-
-    fun nextTrigger(alarm: AlarmEntity, from: ZonedDateTime = ZonedDateTime.now()): ZonedDateTime? {
-        return AlarmTimes.nextTrigger(alarm, from)
     }
 
     private fun pendingAlarmIntent(alarmId: Long): PendingIntent {

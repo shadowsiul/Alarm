@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <include domain="database" path="alarms.db" />
+    <include domain="database" path="alarms.db-wal" />
+    <include domain="database" path="alarms.db-shm" />
+    <include domain="sharedpref" path="alarm_prefs.xml" />
+    <include domain="file" path="shadowsiul-alarms.json" />
+</full-backup-content>

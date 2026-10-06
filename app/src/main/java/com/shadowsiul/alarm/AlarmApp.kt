@@ -16,6 +16,7 @@ class AlarmApp : Application() {
         AlarmNotifications.ensureChannel(this)
         repository = AlarmRepository(this)
         CoroutineScope(Dispatchers.IO).launch {
+            repository.restoreFromBackupIfEmpty()
             repository.rescheduleAll()
         }
     }

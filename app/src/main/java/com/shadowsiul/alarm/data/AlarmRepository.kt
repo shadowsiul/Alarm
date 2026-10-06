@@ -23,7 +23,8 @@ class AlarmRepository(context: Context) {
         val stored = if (cleared.id == 0L) cleared.copy(id = id) else cleared.copy(id = cleared.id)
         scheduler.schedule(stored)
         scheduler.scheduleHolidayRefresh()
-        refreshUpcomingNotification()
+        AlarmPreferences.clearDismissedUpcoming(appContext)
+        afterChange()
         return stored.id
     }
 
@@ -39,14 +40,19 @@ class AlarmRepository(context: Context) {
             snoozeUntilMillis = 0,
         )
         dao.update(updated)
-        if (enabled) scheduler.schedule(updated) else scheduler.cancel(updated.id)
-        refreshUpcomingNotification()
+        if (enabled) {
+            AlarmPreferences.clearDismissedUpcoming(appContext)
+            scheduler.schedule(updated)
+        } else {
+            scheduler.cancel(updated.id)
+        }
+        afterChange()
     }
 
     suspend fun delete(alarm: AlarmEntity) {
         dao.delete(alarm)
         scheduler.cancel(alarm.id)
-        refreshUpcomingNotification()
+        afterChange()
     }
 
     suspend fun rescheduleAll() {
@@ -54,6 +60,7 @@ class AlarmRepository(context: Context) {
         dao.getAll().forEach { alarm ->
             if (alarm.enabled) scheduler.schedule(alarm) else scheduler.cancel(alarm.id)
         }
+        AlarmBackup.persist(appContext, dao.getAll())
         refreshUpcomingNotification()
     }
 
@@ -67,7 +74,9 @@ class AlarmRepository(context: Context) {
             if (updated != alarm) dao.update(updated)
             scheduler.schedule(updated)
         }
-        refreshUpcomingNotification()
+        AlarmPreferences.setDismissedUpcoming(appContext, id)
+        AlarmNotifications.cancelUpcoming(appContext)
+        afterChange()
     }
 
     suspend fun skipNext(id: Long) {
@@ -78,26 +87,22 @@ class AlarmRepository(context: Context) {
         }
         val now = System.currentTimeMillis()
         val next = AlarmTimes.nextFire(alarm) ?: run {
-            refreshUpcomingNotification()
+            afterChange()
             return
         }
         val nextMillis = next.toInstant().toEpochMilli()
-        if (alarm.snoozeUntilMillis > now && nextMillis == alarm.snoozeUntilMillis) {
-            val updated = alarm.copy(snoozeUntilMillis = 0)
-            dao.update(updated)
-            scheduler.schedule(updated)
-            refreshUpcomingNotification()
-            return
-        }
-        if (alarm.repeatDays == 0) {
-            dao.update(alarm.copy(enabled = false, snoozeUntilMillis = 0))
-            scheduler.cancel(id)
+        val updated = if (alarm.snoozeUntilMillis > now && nextMillis == alarm.snoozeUntilMillis) {
+            alarm.copy(snoozeUntilMillis = 0)
+        } else if (alarm.repeatDays == 0) {
+            alarm.copy(enabled = false, snoozeUntilMillis = 0)
         } else {
-            val updated = alarm.copy(skipAfterMillis = nextMillis, snoozeUntilMillis = 0)
-            dao.update(updated)
-            scheduler.schedule(updated)
+            alarm.copy(skipAfterMillis = nextMillis, snoozeUntilMillis = 0)
         }
-        refreshUpcomingNotification()
+        dao.update(updated)
+        if (updated.enabled) scheduler.schedule(updated) else scheduler.cancel(id)
+        AlarmPreferences.setDismissedUpcoming(appContext, id)
+        AlarmNotifications.cancelUpcoming(appContext)
+        afterChange()
     }
 
     suspend fun setSnooze(id: Long, atMillis: Long) {
@@ -105,7 +110,7 @@ class AlarmRepository(context: Context) {
         val updated = alarm.copy(snoozeUntilMillis = atMillis)
         dao.update(updated)
         scheduler.schedule(updated)
-        refreshUpcomingNotification()
+        afterChange()
     }
 
     suspend fun onFired(id: Long): AlarmEntity? {
@@ -121,7 +126,21 @@ class AlarmRepository(context: Context) {
         return cleared
     }
 
+    suspend fun restoreFromBackupIfEmpty() {
+        if (dao.getAll().isNotEmpty()) return
+        val restored = AlarmBackup.read(appContext) ?: return
+        restored.forEach { alarm ->
+            dao.upsert(alarm.copy(id = 0, skipAfterMillis = 0, snoozeUntilMillis = 0))
+        }
+        AlarmBackup.persist(appContext, dao.getAll())
+    }
+
     suspend fun refreshUpcomingNotification() {
         AlarmNotifications.refreshUpcoming(appContext, dao.getAll())
+    }
+
+    private suspend fun afterChange() {
+        AlarmBackup.persist(appContext, dao.getAll())
+        refreshUpcomingNotification()
     }
 }

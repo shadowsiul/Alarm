@@ -35,6 +35,7 @@ class AlarmViewModel(application: Application) : AndroidViewModel(application) {
 
     fun setShowUpcomingNotification(show: Boolean) {
         AlarmPreferences.setShowUpcomingNotification(getApplication(), show)
+        if (show) AlarmPreferences.clearDismissedUpcoming(getApplication())
         viewModelScope.launch { repo.refreshUpcomingNotification() }
     }
 

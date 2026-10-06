@@ -3,14 +3,15 @@
     <string name="channel_alarm_name">Alarms</string>
     <string name="channel_alarm_desc">Fires when an alarm is ringing</string>
     <string name="channel_upcoming_name">Upcoming alarm</string>
-    <string name="channel_upcoming_desc">Shows the next alarm so you can skip or turn it off</string>
+    <string name="channel_upcoming_desc">Shows the next alarm so you can dismiss or turn it off</string>
     <string name="upcoming_title">Alarm at %1$s</string>
     <string name="upcoming_fallback">Next alarm</string>
-    <string name="skip_this_time">Skip this time</string>
     <string name="turn_off">Turn off</string>
     <string name="upcoming_section">Notification</string>
     <string name="upcoming_notification">Show next alarm</string>
-    <string name="upcoming_notification_hint">Keep the next alarm in the notification shade so you can skip it or turn it off before it rings.</string>
+    <string name="upcoming_notification_hint">Keep the next alarm in the notification shade so you can dismiss it or turn it off before it rings.</string>
+    <string name="backup_section">Backup</string>
+    <string name="backup_hint">Alarms are saved on this phone in Downloads (shadowsiul-alarms.json) and in your Google backup, so they can come back after uninstall if backup is on.</string>
 
     <string name="tab_alarms">Alarms</string>
     <string name="tab_options">Options</string>
@@ -62,7 +63,6 @@
     <string name="holidays_section">US federal holidays</string>
     <string name="holidays_hint">Alarms stay silent on these observed dates unless Ring on holidays is on.</string>
     <string name="holiday_today">Today</string>
-    <string name="holidays_year">%1$d</string>
 
     <string name="holiday_new_year">New Year\'s Day</string>
     <string name="holiday_mlk">Birthday of Martin Luther King, Jr.</string>

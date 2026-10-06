@@ -22,7 +22,6 @@ class AlarmRingtoneService : Service() {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private var player: MediaPlayer? = null
     private var vibrator: Vibrator? = null
-    private var currentAlarmId: Long = -1
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -32,6 +31,8 @@ class AlarmRingtoneService : Service() {
             ACTION_DISMISS -> {
                 stopAlarmSound()
                 AlarmNotifications.ringing = false
+                stopForeground(STOP_FOREGROUND_REMOVE)
+                AlarmNotifications.cancelUpcoming(this)
                 if (alarmId >= 0) {
                     scope.launch(Dispatchers.IO) {
                         AlarmRepository(this@AlarmRingtoneService).disableOneShot(alarmId)
@@ -43,13 +44,13 @@ class AlarmRingtoneService : Service() {
             ACTION_SNOOZE -> {
                 stopAlarmSound()
                 AlarmNotifications.ringing = false
+                stopForeground(STOP_FOREGROUND_REMOVE)
                 if (alarmId >= 0) snooze(alarmId)
                 stopSelf()
                 return START_NOT_STICKY
             }
         }
 
-        currentAlarmId = alarmId
         AlarmNotifications.ringing = true
         AlarmNotifications.cancelUpcoming(this)
         AlarmNotifications.ensureChannel(this)

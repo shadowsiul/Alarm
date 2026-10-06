@@ -112,6 +112,10 @@ object AlarmNotifications {
         }
         val (alarm, trigger) = next
         val triggerAt = trigger.toInstant().toEpochMilli()
+        if (AlarmPreferences.shouldHideUpcoming(context, alarm.id)) {
+            cancelUpcoming(context)
+            return
+        }
         val timeText = DateFormat.getTimeFormat(context).format(Date(triggerAt))
         val title = context.getString(R.string.upcoming_title, timeText)
         val text = alarm.label.ifBlank { context.getString(R.string.upcoming_fallback) }
@@ -121,11 +125,11 @@ object AlarmNotifications {
             Intent(context, MainActivity::class.java),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
-        val skip = PendingIntent.getBroadcast(
+        val dismiss = PendingIntent.getBroadcast(
             context,
             3000 + alarm.id.toInt(),
             Intent(context, UpcomingAlarmReceiver::class.java).apply {
-                action = UpcomingAlarmReceiver.ACTION_SKIP
+                action = UpcomingAlarmReceiver.ACTION_DISMISS
                 putExtra(AlarmScheduler.EXTRA_ALARM_ID, alarm.id)
             },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
@@ -145,14 +149,15 @@ object AlarmNotifications {
             .setContentText(text)
             .setSubText(timeText)
             .setCategory(NotificationCompat.CATEGORY_STATUS)
-            .setOngoing(true)
+            .setOngoing(false)
+            .setAutoCancel(true)
             .setOnlyAlertOnce(true)
             .setSilent(true)
             .setShowWhen(true)
             .setWhen(triggerAt)
             .setContentIntent(content)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            .addAction(0, context.getString(R.string.skip_this_time), skip)
+            .addAction(0, context.getString(R.string.dismiss), dismiss)
             .addAction(0, context.getString(R.string.turn_off), turnOff)
             .build()
         try {
@@ -163,6 +168,9 @@ object AlarmNotifications {
     }
 
     fun cancelUpcoming(context: Context) {
-        NotificationManagerCompat.from(context).cancel(UPCOMING_NOTIFICATION_ID)
+        val appContext = context.applicationContext
+        NotificationManagerCompat.from(appContext).cancel(UPCOMING_NOTIFICATION_ID)
+        appContext.getSystemService(NotificationManager::class.java)
+            .cancel(UPCOMING_NOTIFICATION_ID)
     }
 }

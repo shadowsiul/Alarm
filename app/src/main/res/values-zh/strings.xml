@@ -3,14 +3,15 @@
     <string name="channel_alarm_name">闹钟</string>
     <string name="channel_alarm_desc">闹钟响铃时显示</string>
     <string name="channel_upcoming_name">下一个闹钟</string>
-    <string name="channel_upcoming_desc">显示下一个闹钟，以便提前跳过或关闭</string>
+    <string name="channel_upcoming_desc">显示下一个闹钟，以便提前关闭或关掉</string>
     <string name="upcoming_title">闹钟 %1$s</string>
     <string name="upcoming_fallback">下一个闹钟</string>
-    <string name="skip_this_time">跳过这次</string>
     <string name="turn_off">关闭</string>
     <string name="upcoming_section">通知</string>
     <string name="upcoming_notification">显示下一个闹钟</string>
-    <string name="upcoming_notification_hint">在通知栏显示下一个闹钟，以便在响铃前跳过或关闭。</string>
+    <string name="upcoming_notification_hint">在通知栏显示下一个闹钟，以便在响铃前关闭通知或关掉闹钟。</string>
+    <string name="backup_section">备份</string>
+    <string name="backup_hint">闹钟会保存到下载目录（shadowsiul-alarms.json）和 Google 备份。如果已开启备份，卸载重装后可以恢复。</string>
 
     <string name="tab_alarms">闹钟</string>
     <string name="tab_options">选项</string>
@@ -62,7 +63,6 @@
     <string name="holidays_section">美国联邦假日</string>
     <string name="holidays_hint">除非打开“假日仍响铃”，闹钟会在这些调休日静音。</string>
     <string name="holiday_today">今天</string>
-    <string name="holidays_year">%1$d</string>
 
     <string name="holiday_new_year">元旦</string>
     <string name="holiday_mlk">马丁·路德·金纪念日</string>
