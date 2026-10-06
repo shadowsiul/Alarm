@@ -1,0 +1,69 @@
+<resources>
+    <string name="app_name">Alarm</string>
+    <string name="channel_alarm_name">Alarms</string>
+    <string name="channel_alarm_desc">Fires when an alarm is ringing</string>
+
+    <string name="tab_alarms">Alarms</string>
+    <string name="tab_options">Options</string>
+    <string name="add_alarm">Add alarm</string>
+    <string name="empty_alarms">No alarms yet. Tap + to add one.</string>
+    <string name="silenced_today">Silenced today</string>
+    <string name="holiday_banner_body">%1$s is a US federal holiday. Wake-up alarms stay silent unless you turn on Ring on holidays (use that for bedtime).</string>
+    <string name="holiday_override">Rings today (holiday override)</string>
+    <string name="holiday_silence">Holiday silence — next non-holiday day</string>
+    <string name="repeat_one_time">One time</string>
+    <string name="repeat_every_day">Every day</string>
+    <string name="day_sun">Sun</string>
+    <string name="day_mon">Mon</string>
+    <string name="day_tue">Tue</string>
+    <string name="day_wed">Wed</string>
+    <string name="day_thu">Thu</string>
+    <string name="day_fri">Fri</string>
+    <string name="day_sat">Sat</string>
+    <string name="day_sun_short">S</string>
+    <string name="day_mon_short">M</string>
+    <string name="day_tue_short">T</string>
+    <string name="day_wed_short">W</string>
+    <string name="day_thu_short">T</string>
+    <string name="day_fri_short">F</string>
+    <string name="day_sat_short">S</string>
+
+    <string name="new_alarm">New alarm</string>
+    <string name="edit_alarm">Edit alarm</string>
+    <string name="close">Close</string>
+    <string name="delete">Delete</string>
+    <string name="label">Label</string>
+    <string name="repeat">Repeat</string>
+    <string name="sound">Sound: %1$s</string>
+    <string name="choose_sound">Choose sound</string>
+    <string name="choose_alarm_sound">Choose alarm sound</string>
+    <string name="sound_default">Default</string>
+    <string name="vibrate">Vibrate</string>
+    <string name="ring_on_holidays">Ring on holidays</string>
+    <string name="ring_on_holidays_hint">Turn this on for bedtime. Wake-up alarms can stay off so federal holidays stay silent.</string>
+    <string name="save">Save</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="snooze">Snooze</string>
+    <string name="snooze_10">Snooze 10 minutes</string>
+    <string name="alarm_fallback">Alarm</string>
+
+    <string name="options_title">Options</string>
+    <string name="language_section">Language</string>
+    <string name="language_hint">Choose the language for menus and holiday names.</string>
+    <string name="holidays_section">US federal holidays</string>
+    <string name="holidays_hint">Alarms stay silent on these observed dates unless Ring on holidays is on.</string>
+    <string name="holiday_today">Today</string>
+    <string name="holidays_year">%1$d</string>
+
+    <string name="holiday_new_year">New Year\'s Day</string>
+    <string name="holiday_mlk">Birthday of Martin Luther King, Jr.</string>
+    <string name="holiday_washington">Washington\'s Birthday</string>
+    <string name="holiday_memorial">Memorial Day</string>
+    <string name="holiday_juneteenth">Juneteenth National Independence Day</string>
+    <string name="holiday_independence">Independence Day</string>
+    <string name="holiday_labor">Labor Day</string>
+    <string name="holiday_columbus">Columbus Day</string>
+    <string name="holiday_veterans">Veterans Day</string>
+    <string name="holiday_thanksgiving">Thanksgiving Day</string>
+    <string name="holiday_christmas">Christmas Day</string>
+</resources>

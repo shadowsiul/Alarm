@@ -1,0 +1,69 @@
+<resources>
+    <string name="app_name">闹钟</string>
+    <string name="channel_alarm_name">闹钟</string>
+    <string name="channel_alarm_desc">闹钟响铃时显示</string>
+
+    <string name="tab_alarms">闹钟</string>
+    <string name="tab_options">选项</string>
+    <string name="add_alarm">添加闹钟</string>
+    <string name="empty_alarms">还没有闹钟。点按 + 添加。</string>
+    <string name="silenced_today">今日已静音</string>
+    <string name="holiday_banner_body">今天是美国联邦假日：%1$s。起床闹钟会静音，除非打开“假日仍响铃”（适合睡觉闹钟）。</string>
+    <string name="holiday_override">今日仍响铃（假日例外）</string>
+    <string name="holiday_silence">假日静音 — 下一个非假日</string>
+    <string name="repeat_one_time">仅一次</string>
+    <string name="repeat_every_day">每天</string>
+    <string name="day_sun">周日</string>
+    <string name="day_mon">周一</string>
+    <string name="day_tue">周二</string>
+    <string name="day_wed">周三</string>
+    <string name="day_thu">周四</string>
+    <string name="day_fri">周五</string>
+    <string name="day_sat">周六</string>
+    <string name="day_sun_short">日</string>
+    <string name="day_mon_short">一</string>
+    <string name="day_tue_short">二</string>
+    <string name="day_wed_short">三</string>
+    <string name="day_thu_short">四</string>
+    <string name="day_fri_short">五</string>
+    <string name="day_sat_short">六</string>
+
+    <string name="new_alarm">新建闹钟</string>
+    <string name="edit_alarm">编辑闹钟</string>
+    <string name="close">关闭</string>
+    <string name="delete">删除</string>
+    <string name="label">标签</string>
+    <string name="repeat">重复</string>
+    <string name="sound">铃声：%1$s</string>
+    <string name="choose_sound">选择铃声</string>
+    <string name="choose_alarm_sound">选择闹钟铃声</string>
+    <string name="sound_default">默认</string>
+    <string name="vibrate">振动</string>
+    <string name="ring_on_holidays">假日仍响铃</string>
+    <string name="ring_on_holidays_hint">睡觉闹钟请打开此项。起床闹钟可保持关闭，以便联邦假日静音。</string>
+    <string name="save">保存</string>
+    <string name="dismiss">关闭</string>
+    <string name="snooze">稍后提醒</string>
+    <string name="snooze_10">推迟 10 分钟</string>
+    <string name="alarm_fallback">闹钟</string>
+
+    <string name="options_title">选项</string>
+    <string name="language_section">语言</string>
+    <string name="language_hint">选择菜单和假日名称的语言。</string>
+    <string name="holidays_section">美国联邦假日</string>
+    <string name="holidays_hint">除非打开“假日仍响铃”，闹钟会在这些调休日静音。</string>
+    <string name="holiday_today">今天</string>
+    <string name="holidays_year">%1$d</string>
+
+    <string name="holiday_new_year">元旦</string>
+    <string name="holiday_mlk">马丁·路德·金纪念日</string>
+    <string name="holiday_washington">华盛顿诞辰日</string>
+    <string name="holiday_memorial">阵亡将士纪念日</string>
+    <string name="holiday_juneteenth">六月节国家独立日</string>
+    <string name="holiday_independence">独立日</string>
+    <string name="holiday_labor">劳动节</string>
+    <string name="holiday_columbus">哥伦布日</string>
+    <string name="holiday_veterans">退伍军人节</string>
+    <string name="holiday_thanksgiving">感恩节</string>
+    <string name="holiday_christmas">圣诞节</string>
+</resources>
