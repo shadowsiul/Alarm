@@ -1,9 +1,9 @@
 # Alarm
 
-An Alarm clock that silence Alarm on US Federal holidays.
+An Alarm clock that silence alarms on US Federal holidays.
 Vibe-coded with Grok and Claude.
 
-##Compatibilty
+## Compatibilty
 
 Android 8 and newer.
 
