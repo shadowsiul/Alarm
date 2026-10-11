@@ -9,7 +9,8 @@ Android 8 and newer.
 
 ## Features
 
-Create Alarms that can ring on Federal Holidays.
+- Create Alarms that can ring on Federal Holidays.
+
 ### Personalize:
 	- Alarm Sound
 	- Snooze Length (5, 10, 15)
