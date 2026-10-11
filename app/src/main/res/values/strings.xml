@@ -11,7 +11,7 @@
     <string name="upcoming_notification">Show next alarm</string>
     <string name="upcoming_notification_hint">Shows the next alarm in the notification shade about 6 hours before it rings so you can dismiss it or turn it off.</string>
     <string name="backup_section">Backup</string>
-    <string name="backup_hint">Alarms are saved on this phone in Downloads (shadowsiul-alarms.json) and in your Google backup, so they can come back after uninstall if backup is on.</string>
+    <string name="backup_hint">Alarms are saved on this phone in Downloads (alarms-bk.json) and in your Google backup, so they can come back after uninstall if backup is on.</string>
 
     <string name="tab_alarms">Alarms</string>
     <string name="tab_options">Options</string>
@@ -62,6 +62,10 @@
     <string name="snooze_5">Snooze 5 minutes</string>
     <string name="snooze_10">Snooze 10 minutes</string>
     <string name="snooze_15">Snooze 15 minutes</string>
+    <string name="snooze_math_prompt">Solve %1$s to snooze again</string>
+    <string name="snooze_math_answer">Answer</string>
+    <string name="snooze_math_wrong">Wrong answer. Try this one.</string>
+    <string name="snooze_math_submit">Check answer</string>
     <string name="alarm_fallback">Alarm</string>
 
     <string name="options_title">Options</string>

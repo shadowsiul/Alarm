@@ -11,7 +11,7 @@
     <string name="upcoming_notification">显示下一个闹钟</string>
     <string name="upcoming_notification_hint">在响铃前约 6 小时于通知栏显示下一个闹钟，以便关闭通知或关掉闹钟。</string>
     <string name="backup_section">备份</string>
-    <string name="backup_hint">闹钟会保存到下载目录（shadowsiul-alarms.json）和 Google 备份。如果已开启备份，卸载重装后可以恢复。</string>
+    <string name="backup_hint">闹钟会保存到下载目录（alarms-bk.json）和 Google 备份。如果已开启备份，卸载重装后可以恢复。</string>
 
     <string name="tab_alarms">闹钟</string>
     <string name="tab_options">选项</string>
@@ -62,6 +62,10 @@
     <string name="snooze_5">推迟 5 分钟</string>
     <string name="snooze_10">推迟 10 分钟</string>
     <string name="snooze_15">推迟 15 分钟</string>
+    <string name="snooze_math_prompt">再推迟请先算出 %1$s</string>
+    <string name="snooze_math_answer">答案</string>
+    <string name="snooze_math_wrong">不对，换一题。</string>
+    <string name="snooze_math_submit">检查答案</string>
     <string name="alarm_fallback">闹钟</string>
 
     <string name="options_title">选项</string>

@@ -12,7 +12,8 @@ import org.json.JSONObject
 import java.io.File
 
 object AlarmBackup {
-    const val FILE_NAME = "shadowsiul-alarms.json"
+    const val FILE_NAME = "alarms-bk.json"
+    private const val LEGACY_FILE_NAME = "shadowsiul-alarms.json"
     private const val VERSION = 1
 
     fun encode(alarms: List<AlarmEntity>): String {
@@ -73,7 +74,7 @@ object AlarmBackup {
 
     fun persist(context: Context, alarms: List<AlarmEntity>) {
         val json = encode(alarms)
-        runCatching { internalFile(context).writeText(json) }
+        runCatching { internalFile(context, FILE_NAME).writeText(json) }
         runCatching { writeDownloads(context, json) }
         runCatching { BackupManager(context).dataChanged() }
     }
@@ -81,14 +82,15 @@ object AlarmBackup {
     fun read(context: Context): List<AlarmEntity>? {
         val sources = listOfNotNull(
             runCatching { readDownloads(context) }.getOrNull(),
-            runCatching { internalFile(context).takeIf { it.exists() }?.readText() }.getOrNull(),
+            runCatching { internalFile(context, FILE_NAME).takeIf { it.exists() }?.readText() }.getOrNull(),
+            runCatching { internalFile(context, LEGACY_FILE_NAME).takeIf { it.exists() }?.readText() }.getOrNull(),
         )
         return sources.firstNotNullOfOrNull { text ->
             runCatching { decode(text).takeIf { it.isNotEmpty() } }.getOrNull()
         }
     }
 
-    private fun internalFile(context: Context) = File(context.filesDir, FILE_NAME)
+    private fun internalFile(context: Context, name: String) = File(context.filesDir, name)
 
     private fun writeDownloads(context: Context, json: String) {
         if (Build.VERSION.SDK_INT >= 29) {
@@ -113,22 +115,27 @@ object AlarmBackup {
 
     private fun readDownloads(context: Context): String? {
         if (Build.VERSION.SDK_INT >= 29) {
-            val uri = findDownloadUri(context) ?: return null
+            val uri = findDownloadUri(context, FILE_NAME)
+                ?: findDownloadUri(context, LEGACY_FILE_NAME)
+                ?: return null
             return context.contentResolver.openInputStream(uri)?.use { it.readBytes().decodeToString() }
         }
         @Suppress("DEPRECATION")
-        val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), FILE_NAME)
-        return file.takeIf { it.exists() }?.readText()
+        val downloads = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        return listOf(FILE_NAME, LEGACY_FILE_NAME)
+            .map { File(downloads, it) }
+            .firstOrNull { it.exists() }
+            ?.readText()
     }
 
-    private fun findDownloadUri(context: Context): android.net.Uri? {
+    private fun findDownloadUri(context: Context, name: String = FILE_NAME): android.net.Uri? {
         if (Build.VERSION.SDK_INT < 29) return null
         val collection = MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL)
         context.contentResolver.query(
             collection,
             arrayOf(MediaStore.MediaColumns._ID),
             "${MediaStore.MediaColumns.DISPLAY_NAME}=?",
-            arrayOf(FILE_NAME),
+            arrayOf(name),
             null,
         )?.use { cursor ->
             if (cursor.moveToFirst()) {

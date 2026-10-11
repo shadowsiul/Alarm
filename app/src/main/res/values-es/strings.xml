@@ -11,7 +11,7 @@
     <string name="upcoming_notification">Mostrar la próxima alarma</string>
     <string name="upcoming_notification_hint">Muestra la próxima alarma en el área de notificaciones unas 6 horas antes de que suene, para descartarla o apagarla.</string>
     <string name="backup_section">Copia de seguridad</string>
-    <string name="backup_hint">Las alarmas se guardan en Descargas (shadowsiul-alarms.json) y en la copia de Google, para que puedan volver tras desinstalar si la copia está activa.</string>
+    <string name="backup_hint">Las alarmas se guardan en Descargas (alarms-bk.json) y en la copia de Google, para que puedan volver tras desinstalar si la copia está activa.</string>
 
     <string name="tab_alarms">Alarmas</string>
     <string name="tab_options">Opciones</string>
@@ -62,6 +62,10 @@
     <string name="snooze_5">Posponer 5 minutos</string>
     <string name="snooze_10">Posponer 10 minutos</string>
     <string name="snooze_15">Posponer 15 minutos</string>
+    <string name="snooze_math_prompt">Resuelve %1$s para posponer otra vez</string>
+    <string name="snooze_math_answer">Respuesta</string>
+    <string name="snooze_math_wrong">Incorrecto. Prueba esta.</string>
+    <string name="snooze_math_submit">Comprobar</string>
     <string name="alarm_fallback">Alarma</string>
 
     <string name="options_title">Opciones</string>

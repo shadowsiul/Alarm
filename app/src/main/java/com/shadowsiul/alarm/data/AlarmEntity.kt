@@ -24,6 +24,8 @@ data class AlarmEntity(
     val autoDismissMinutes: Int = 0,
     /** Minutes to snooze when Snooze is tapped. */
     val snoozeMinutes: Int = 10,
+    /** How many times this occurrence has already been snoozed. */
+    val snoozeCount: Int = 0,
 ) {
     fun repeatsOn(calendarDay: Int): Boolean {
         val bit = 1 shl (calendarDay - 1)

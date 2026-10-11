@@ -18,6 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AlarmRingtoneService : Service() {
 
@@ -46,17 +47,41 @@ class AlarmRingtoneService : Service() {
                 return START_NOT_STICKY
             }
             ACTION_SNOOZE -> {
-                cancelAutoDismiss(alarmId)
-                stopAlarmSound()
-                AlarmNotifications.ringing = false
-                stopForeground(STOP_FOREGROUND_REMOVE)
-                sendBroadcast(Intent(ACTION_STOP_RINGING_UI).setPackage(packageName))
                 val minutes = intent.getIntExtra(EXTRA_SNOOZE_MINUTES, 10).let {
                     if (it in listOf(5, 10, 15)) it else 10
                 }
-                if (alarmId >= 0) snooze(alarmId, minutes)
-                stopSelf()
-                return START_NOT_STICKY
+                val confirmed = intent.getBooleanExtra(EXTRA_SNOOZE_CONFIRMED, false)
+                scope.launch(Dispatchers.IO) {
+                    val needsMath = !confirmed && alarmId >= 0 &&
+                        (AlarmRepository(this@AlarmRingtoneService).getAlarm(alarmId)?.snoozeCount ?: 0) >= 1
+                    if (needsMath) {
+                        withContext(Dispatchers.Main) {
+                            startActivity(
+                                Intent(this@AlarmRingtoneService, AlarmRingingActivity::class.java).apply {
+                                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                                    putExtra(AlarmScheduler.EXTRA_ALARM_ID, alarmId)
+                                    putExtra(EXTRA_REQUIRE_MATH, true)
+                                },
+                            )
+                        }
+                        return@launch
+                    }
+                    withContext(Dispatchers.Main) {
+                        cancelAutoDismiss(alarmId)
+                        stopAlarmSound()
+                        AlarmNotifications.ringing = false
+                        stopForeground(STOP_FOREGROUND_REMOVE)
+                        sendBroadcast(Intent(ACTION_STOP_RINGING_UI).setPackage(packageName))
+                    }
+                    if (alarmId >= 0) {
+                        AlarmRepository(this@AlarmRingtoneService).setSnooze(
+                            alarmId,
+                            System.currentTimeMillis() + minutes * 60 * 1000L,
+                        )
+                    }
+                    stopSelf()
+                }
+                return START_STICKY
             }
         }
 
@@ -167,13 +192,6 @@ class AlarmRingtoneService : Service() {
         vibrator?.vibrate(effect)
     }
 
-    private fun snooze(alarmId: Long, minutes: Int) {
-        val triggerAt = System.currentTimeMillis() + minutes * 60 * 1000L
-        scope.launch(Dispatchers.IO) {
-            AlarmRepository(this@AlarmRingtoneService).setSnooze(alarmId, triggerAt)
-        }
-    }
-
     private fun stopAlarmSound() {
         player?.runCatching {
             if (isPlaying) stop()
@@ -195,6 +213,8 @@ class AlarmRingtoneService : Service() {
         const val ACTION_DISMISS = "com.shadowsiul.alarm.DISMISS"
         const val ACTION_SNOOZE = "com.shadowsiul.alarm.SNOOZE"
         const val EXTRA_SNOOZE_MINUTES = "snooze_minutes"
+        const val EXTRA_SNOOZE_CONFIRMED = "snooze_confirmed"
+        const val EXTRA_REQUIRE_MATH = "require_math"
         const val ACTION_STOP_RINGING_UI = "com.shadowsiul.alarm.STOP_RINGING_UI"
     }
 }

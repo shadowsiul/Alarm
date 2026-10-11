@@ -4,5 +4,6 @@
     <include domain="database" path="alarms.db-wal" />
     <include domain="database" path="alarms.db-shm" />
     <include domain="sharedpref" path="alarm_prefs.xml" />
+    <include domain="file" path="alarms-bk.json" />
     <include domain="file" path="shadowsiul-alarms.json" />
 </full-backup-content>

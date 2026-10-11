@@ -18,7 +18,7 @@ class AlarmRepository(context: Context) {
     suspend fun getAlarm(id: Long): AlarmEntity? = dao.getById(id)
 
     suspend fun save(alarm: AlarmEntity): Long {
-        val cleared = alarm.copy(skipAfterMillis = 0, snoozeUntilMillis = 0)
+        val cleared = alarm.copy(skipAfterMillis = 0, snoozeUntilMillis = 0, snoozeCount = 0)
         val id = dao.upsert(cleared)
         val stored = if (cleared.id == 0L) cleared.copy(id = id) else cleared.copy(id = cleared.id)
         scheduler.schedule(stored)
@@ -38,6 +38,7 @@ class AlarmRepository(context: Context) {
             enabled = enabled,
             skipAfterMillis = if (enabled) 0 else alarm.skipAfterMillis,
             snoozeUntilMillis = 0,
+            snoozeCount = if (enabled) 0 else alarm.snoozeCount,
         )
         dao.update(updated)
         if (enabled) {
@@ -67,10 +68,10 @@ class AlarmRepository(context: Context) {
     suspend fun disableOneShot(id: Long) {
         val alarm = dao.getById(id) ?: return
         if (alarm.repeatDays == 0) {
-            dao.update(alarm.copy(enabled = false, snoozeUntilMillis = 0))
+            dao.update(alarm.copy(enabled = false, snoozeUntilMillis = 0, snoozeCount = 0))
             scheduler.cancel(id)
         } else {
-            val updated = alarm.copy(snoozeUntilMillis = 0)
+            val updated = alarm.copy(snoozeUntilMillis = 0, snoozeCount = 0)
             if (updated != alarm) dao.update(updated)
             scheduler.schedule(updated)
         }
@@ -92,11 +93,11 @@ class AlarmRepository(context: Context) {
         }
         val nextMillis = next.toInstant().toEpochMilli()
         val updated = if (alarm.snoozeUntilMillis > now && nextMillis == alarm.snoozeUntilMillis) {
-            alarm.copy(snoozeUntilMillis = 0)
+            alarm.copy(snoozeUntilMillis = 0, snoozeCount = 0)
         } else if (alarm.repeatDays == 0) {
-            alarm.copy(enabled = false, snoozeUntilMillis = 0)
+            alarm.copy(enabled = false, snoozeUntilMillis = 0, snoozeCount = 0)
         } else {
-            alarm.copy(skipAfterMillis = nextMillis, snoozeUntilMillis = 0)
+            alarm.copy(skipAfterMillis = nextMillis, snoozeUntilMillis = 0, snoozeCount = 0)
         }
         dao.update(updated)
         if (updated.enabled) scheduler.schedule(updated) else scheduler.cancel(id)
@@ -107,7 +108,7 @@ class AlarmRepository(context: Context) {
 
     suspend fun setSnooze(id: Long, atMillis: Long) {
         val alarm = dao.getById(id) ?: return
-        val updated = alarm.copy(snoozeUntilMillis = atMillis)
+        val updated = alarm.copy(snoozeUntilMillis = atMillis, snoozeCount = alarm.snoozeCount + 1)
         dao.update(updated)
         scheduler.schedule(updated)
         afterChange()
@@ -120,7 +121,11 @@ class AlarmRepository(context: Context) {
             rescheduleAll()
             return null
         }
-        val cleared = alarm.copy(snoozeUntilMillis = 0)
+        val isSnoozeFire = alarm.snoozeUntilMillis > 0
+        val cleared = alarm.copy(
+            snoozeUntilMillis = 0,
+            snoozeCount = if (isSnoozeFire) alarm.snoozeCount else 0,
+        )
         if (cleared != alarm) dao.update(cleared)
         scheduler.schedule(cleared)
         return cleared
