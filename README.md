@@ -2,7 +2,7 @@
 
 An Android alarm clock. Completely vibe-coded with Grok and Claude.
 
-Works on Android 8 and newer. Current version is 1.5.
+Works on Android 8 and newer.
 
 ## Using it
 
@@ -21,11 +21,3 @@ Menus are available in English, Spanish, and Chinese.
 Alarms live on the phone. Whenever they change, the app also writes `alarms-bk.json` to Downloads. After an uninstall, open the app once and it will try to load that file if the list is empty.
 
 If the phone has Google Backup turned on, Android may also restore the alarm database when you reinstall from the Play Store on the same account. That is automatic. There is no backup button in the app.
-
-## Building
-
-1. In the project folder, run `.\gradlew.bat assembleDebug`
-2. The APK is `app\build\outputs\apk\debug\app-debug.apk`
-3. Or run `.\gradlew.bat installDebug` to install on a connected device
-
-Allow notifications and exact alarms when Android asks.
