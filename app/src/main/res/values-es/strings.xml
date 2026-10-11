@@ -9,7 +9,7 @@
     <string name="turn_off">Apagar</string>
     <string name="upcoming_section">Notificación</string>
     <string name="upcoming_notification">Mostrar la próxima alarma</string>
-    <string name="upcoming_notification_hint">Mantén la próxima alarma en el área de notificaciones para descartarla o apagarla antes de que suene.</string>
+    <string name="upcoming_notification_hint">Muestra la próxima alarma en el área de notificaciones unas 6 horas antes de que suene, para descartarla o apagarla.</string>
     <string name="backup_section">Copia de seguridad</string>
     <string name="backup_hint">Las alarmas se guardan en Descargas (shadowsiul-alarms.json) y en la copia de Google, para que puedan volver tras desinstalar si la copia está activa.</string>
 
@@ -51,10 +51,17 @@
     <string name="vibrate">Vibrar</string>
     <string name="ring_on_holidays">Sonar en festivos</string>
     <string name="ring_on_holidays_hint">Actívalo para la hora de dormir. Las alarmas para despertar pueden quedar apagadas y silenciarse en festivos federales.</string>
+    <string name="auto_dismiss">Descarte automático</string>
+    <string name="auto_dismiss_hint">Deja de sonar sola después de este tiempo si no la descartas ni la pospones.</string>
+    <string name="auto_dismiss_off">No</string>
+    <string name="auto_dismiss_minutes">%1$d min</string>
     <string name="save">Guardar</string>
     <string name="dismiss">Descartar</string>
     <string name="snooze">Posponer</string>
+    <string name="snooze_hint">Cuánto espera esta alarma después de tocar Posponer.</string>
+    <string name="snooze_5">Posponer 5 minutos</string>
     <string name="snooze_10">Posponer 10 minutos</string>
+    <string name="snooze_15">Posponer 15 minutos</string>
     <string name="alarm_fallback">Alarma</string>
 
     <string name="options_title">Opciones</string>

@@ -29,6 +29,8 @@ object AlarmBackup {
                     put("soundName", alarm.soundName)
                     put("vibrate", alarm.vibrate)
                     put("ringOnHolidays", alarm.ringOnHolidays)
+                    put("autoDismissMinutes", alarm.autoDismissMinutes)
+                    put("snoozeMinutes", alarm.snoozeMinutes)
                 },
             )
         }
@@ -59,6 +61,10 @@ object AlarmBackup {
                         soundName = item.optString("soundName", "Default"),
                         vibrate = item.optBoolean("vibrate", true),
                         ringOnHolidays = item.optBoolean("ringOnHolidays"),
+                        autoDismissMinutes = item.optInt("autoDismissMinutes"),
+                        snoozeMinutes = item.optInt("snoozeMinutes", 10).let { minutes ->
+                            if (minutes in listOf(5, 10, 15)) minutes else 10
+                        },
                     ),
                 )
             }

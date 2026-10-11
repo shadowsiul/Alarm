@@ -66,6 +66,10 @@
             android:exported="false" />
 
         <receiver
+            android:name=".alarm.UpcomingRevealReceiver"
+            android:exported="false" />
+
+        <receiver
             android:name=".alarm.UpcomingAlarmReceiver"
             android:exported="false" />
 

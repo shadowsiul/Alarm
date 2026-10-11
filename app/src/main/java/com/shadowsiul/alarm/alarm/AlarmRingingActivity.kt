@@ -1,9 +1,13 @@
 package com.shadowsiul.alarm.alarm
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.core.content.ContextCompat
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -35,10 +39,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class AlarmRingingActivity : ComponentActivity() {
+    private val stopReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            finish()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setShowWhenLocked(true)
         setTurnScreenOn(true)
+        ContextCompat.registerReceiver(
+            this,
+            stopReceiver,
+            IntentFilter(AlarmRingtoneService.ACTION_STOP_RINGING_UI),
+            ContextCompat.RECEIVER_NOT_EXPORTED,
+        )
         val alarmId = intent.getLongExtra(AlarmScheduler.EXTRA_ALARM_ID, -1L)
 
         setContent {
@@ -83,6 +99,10 @@ class AlarmRingingActivity : ComponentActivity() {
                             Text(stringResource(R.string.dismiss))
                         }
                         Spacer(Modifier.height(12.dp))
+                        val snoozeMinutes = when (alarm?.snoozeMinutes) {
+                            5, 15 -> alarm?.snoozeMinutes ?: 10
+                            else -> 10
+                        }
                         FilledTonalButton(
                             modifier = Modifier.fillMaxWidth(),
                             onClick = {
@@ -90,16 +110,30 @@ class AlarmRingingActivity : ComponentActivity() {
                                     Intent(this@AlarmRingingActivity, AlarmRingtoneService::class.java).apply {
                                         action = AlarmRingtoneService.ACTION_SNOOZE
                                         putExtra(AlarmScheduler.EXTRA_ALARM_ID, alarmId)
+                                        putExtra(AlarmRingtoneService.EXTRA_SNOOZE_MINUTES, snoozeMinutes)
                                     },
                                 )
                                 finish()
                             },
                         ) {
-                            Text(stringResource(R.string.snooze_10))
+                            Text(
+                                stringResource(
+                                    when (snoozeMinutes) {
+                                        5 -> R.string.snooze_5
+                                        15 -> R.string.snooze_15
+                                        else -> R.string.snooze_10
+                                    },
+                                ),
+                            )
                         }
                     }
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        runCatching { unregisterReceiver(stopReceiver) }
+        super.onDestroy()
     }
 }

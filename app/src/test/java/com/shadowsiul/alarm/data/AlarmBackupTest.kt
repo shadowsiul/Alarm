@@ -19,6 +19,8 @@ class AlarmBackupTest {
                 soundName = "Bell",
                 vibrate = false,
                 ringOnHolidays = true,
+                autoDismissMinutes = 15,
+                snoozeMinutes = 5,
             ),
             AlarmEntity(
                 hour = 22,
@@ -36,6 +38,8 @@ class AlarmBackupTest {
         assertEquals("content://media/external/audio/1", restored[0].soundUri)
         assertEquals(false, restored[0].vibrate)
         assertEquals(true, restored[0].ringOnHolidays)
+        assertEquals(15, restored[0].autoDismissMinutes)
+        assertEquals(5, restored[0].snoozeMinutes)
         assertEquals(22, restored[1].hour)
         assertNull(restored[1].soundUri)
     }

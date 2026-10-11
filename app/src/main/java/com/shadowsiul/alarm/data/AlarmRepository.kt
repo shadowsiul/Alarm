@@ -136,7 +136,11 @@ class AlarmRepository(context: Context) {
     }
 
     suspend fun refreshUpcomingNotification() {
-        AlarmNotifications.refreshUpcoming(appContext, dao.getAll())
+        val alarms = dao.getAll()
+        AlarmNotifications.refreshUpcoming(appContext, alarms)
+        scheduler.scheduleUpcomingReveal(
+            AlarmTimes.nextAmong(alarms)?.second?.toInstant()?.toEpochMilli(),
+        )
     }
 
     private suspend fun afterChange() {

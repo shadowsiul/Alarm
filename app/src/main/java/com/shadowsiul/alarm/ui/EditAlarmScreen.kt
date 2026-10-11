@@ -61,6 +61,8 @@ fun EditAlarmScreen(
     var repeatDays by remember { mutableIntStateOf(0) }
     var vibrate by remember { mutableStateOf(true) }
     var ringOnHolidays by remember { mutableStateOf(false) }
+    var autoDismissMinutes by remember { mutableIntStateOf(0) }
+    var snoozeMinutes by remember { mutableIntStateOf(10) }
     var soundUri by remember { mutableStateOf<String?>(null) }
     var soundName by remember { mutableStateOf("") }
     val defaultSoundName = stringResource(R.string.sound_default)
@@ -80,6 +82,14 @@ fun EditAlarmScreen(
                 repeatDays = alarm.repeatDays
                 vibrate = alarm.vibrate
                 ringOnHolidays = alarm.ringOnHolidays
+                autoDismissMinutes = when (alarm.autoDismissMinutes) {
+                    10, 15 -> alarm.autoDismissMinutes
+                    else -> 0
+                }
+                snoozeMinutes = when (alarm.snoozeMinutes) {
+                    5, 15 -> alarm.snoozeMinutes
+                    else -> 10
+                }
                 soundUri = alarm.soundUri
                 soundName = alarm.soundName
                 timeState.hour = alarm.hour
@@ -179,6 +189,49 @@ fun EditAlarmScreen(
                 }
                 Switch(checked = ringOnHolidays, onCheckedChange = { ringOnHolidays = it })
             }
+            Spacer(Modifier.height(16.dp))
+            Text(stringResource(R.string.auto_dismiss))
+            Text(
+                stringResource(R.string.auto_dismiss_hint),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(Modifier.height(8.dp))
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                val choices = listOf(0, 10, 15)
+                choices.forEach { minutes ->
+                    FilterChip(
+                        selected = autoDismissMinutes == minutes,
+                        onClick = { autoDismissMinutes = minutes },
+                        label = {
+                            Text(
+                                if (minutes == 0) {
+                                    stringResource(R.string.auto_dismiss_off)
+                                } else {
+                                    stringResource(R.string.auto_dismiss_minutes, minutes)
+                                },
+                            )
+                        },
+                    )
+                }
+            }
+            Spacer(Modifier.height(16.dp))
+            Text(stringResource(R.string.snooze))
+            Text(
+                stringResource(R.string.snooze_hint),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(Modifier.height(8.dp))
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                listOf(5, 10, 15).forEach { minutes ->
+                    FilterChip(
+                        selected = snoozeMinutes == minutes,
+                        onClick = { snoozeMinutes = minutes },
+                        label = { Text(stringResource(R.string.auto_dismiss_minutes, minutes)) },
+                    )
+                }
+            }
             Spacer(Modifier.height(24.dp))
             Button(
                 modifier = Modifier.fillMaxWidth(),
@@ -196,6 +249,8 @@ fun EditAlarmScreen(
                                 soundName = soundName,
                                 vibrate = vibrate,
                                 ringOnHolidays = ringOnHolidays,
+                                autoDismissMinutes = autoDismissMinutes,
+                                snoozeMinutes = snoozeMinutes,
                             ),
                         )
                         onDone()

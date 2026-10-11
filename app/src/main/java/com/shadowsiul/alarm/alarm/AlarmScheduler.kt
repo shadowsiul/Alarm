@@ -46,6 +46,25 @@ class AlarmScheduler(private val context: Context) {
         )
     }
 
+    fun scheduleUpcomingReveal(triggerAt: Long?) {
+        val pending = PendingIntent.getBroadcast(
+            context,
+            UPCOMING_REVEAL_REQUEST,
+            Intent(context, UpcomingRevealReceiver::class.java),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+        )
+        if (triggerAt == null) {
+            alarmManager.cancel(pending)
+            return
+        }
+        val revealAt = triggerAt - AlarmNotifications.UPCOMING_LEAD_MILLIS
+        if (revealAt <= System.currentTimeMillis()) {
+            alarmManager.cancel(pending)
+            return
+        }
+        alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, revealAt, pending)
+    }
+
     fun nextFireMillis(alarm: AlarmEntity, from: ZonedDateTime = ZonedDateTime.now()): Long? {
         return AlarmTimes.nextFire(alarm, from)?.toInstant()?.toEpochMilli()
     }
@@ -79,5 +98,6 @@ class AlarmScheduler(private val context: Context) {
         const val EXTRA_ALARM_ID = "alarm_id"
         private const val SHOW_REQUEST = 9001
         private const val HOLIDAY_REFRESH_REQUEST = 9002
+        private const val UPCOMING_REVEAL_REQUEST = 9003
     }
 }

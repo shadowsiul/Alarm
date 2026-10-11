@@ -1,5 +1,7 @@
 package com.shadowsiul.alarm.alarm
 
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.media.AudioAttributes
@@ -29,10 +31,12 @@ class AlarmRingtoneService : Service() {
         val alarmId = intent?.getLongExtra(AlarmScheduler.EXTRA_ALARM_ID, -1L) ?: -1L
         when (intent?.action) {
             ACTION_DISMISS -> {
+                cancelAutoDismiss(alarmId)
                 stopAlarmSound()
                 AlarmNotifications.ringing = false
                 stopForeground(STOP_FOREGROUND_REMOVE)
                 AlarmNotifications.cancelUpcoming(this)
+                sendBroadcast(Intent(ACTION_STOP_RINGING_UI).setPackage(packageName))
                 if (alarmId >= 0) {
                     scope.launch(Dispatchers.IO) {
                         AlarmRepository(this@AlarmRingtoneService).disableOneShot(alarmId)
@@ -42,10 +46,15 @@ class AlarmRingtoneService : Service() {
                 return START_NOT_STICKY
             }
             ACTION_SNOOZE -> {
+                cancelAutoDismiss(alarmId)
                 stopAlarmSound()
                 AlarmNotifications.ringing = false
                 stopForeground(STOP_FOREGROUND_REMOVE)
-                if (alarmId >= 0) snooze(alarmId)
+                sendBroadcast(Intent(ACTION_STOP_RINGING_UI).setPackage(packageName))
+                val minutes = intent.getIntExtra(EXTRA_SNOOZE_MINUTES, 10).let {
+                    if (it in listOf(5, 10, 15)) it else 10
+                }
+                if (alarmId >= 0) snooze(alarmId, minutes)
                 stopSelf()
                 return START_NOT_STICKY
             }
@@ -76,6 +85,7 @@ class AlarmRingtoneService : Service() {
                     alarmId,
                     label,
                     timeText,
+                    alarm?.snoozeMinutes ?: 10,
                 ),
             )
             playSound(alarm?.soundUri)
@@ -85,8 +95,38 @@ class AlarmRingtoneService : Service() {
                 putExtra(AlarmScheduler.EXTRA_ALARM_ID, alarmId)
             }
             startActivity(ring)
+            scheduleAutoDismiss(alarmId, alarm?.autoDismissMinutes ?: 0)
         }
         return START_STICKY
+    }
+
+    private fun scheduleAutoDismiss(alarmId: Long, minutes: Int) {
+        cancelAutoDismiss(alarmId)
+        if (alarmId < 0 || minutes <= 0) return
+        val am = getSystemService(ALARM_SERVICE) as AlarmManager
+        am.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            System.currentTimeMillis() + minutes * 60 * 1000L,
+            autoDismissIntent(alarmId),
+        )
+    }
+
+    private fun cancelAutoDismiss(alarmId: Long) {
+        if (alarmId < 0) return
+        val am = getSystemService(ALARM_SERVICE) as AlarmManager
+        am.cancel(autoDismissIntent(alarmId))
+    }
+
+    private fun autoDismissIntent(alarmId: Long): PendingIntent {
+        return PendingIntent.getService(
+            this,
+            5000 + alarmId.toInt(),
+            Intent(this, AlarmRingtoneService::class.java).apply {
+                action = ACTION_DISMISS
+                putExtra(AlarmScheduler.EXTRA_ALARM_ID, alarmId)
+            },
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+        )
     }
 
     private fun playSound(uriString: String?) {
@@ -127,8 +167,8 @@ class AlarmRingtoneService : Service() {
         vibrator?.vibrate(effect)
     }
 
-    private fun snooze(alarmId: Long) {
-        val triggerAt = System.currentTimeMillis() + 10 * 60 * 1000
+    private fun snooze(alarmId: Long, minutes: Int) {
+        val triggerAt = System.currentTimeMillis() + minutes * 60 * 1000L
         scope.launch(Dispatchers.IO) {
             AlarmRepository(this@AlarmRingtoneService).setSnooze(alarmId, triggerAt)
         }
@@ -154,5 +194,7 @@ class AlarmRingtoneService : Service() {
     companion object {
         const val ACTION_DISMISS = "com.shadowsiul.alarm.DISMISS"
         const val ACTION_SNOOZE = "com.shadowsiul.alarm.SNOOZE"
+        const val EXTRA_SNOOZE_MINUTES = "snooze_minutes"
+        const val ACTION_STOP_RINGING_UI = "com.shadowsiul.alarm.STOP_RINGING_UI"
     }
 }

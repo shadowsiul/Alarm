@@ -20,6 +20,7 @@ object AlarmNotifications {
     const val UPCOMING_CHANNEL_ID = "upcoming"
     const val RINGING_NOTIFICATION_ID = 42
     const val UPCOMING_NOTIFICATION_ID = 41
+    const val UPCOMING_LEAD_MILLIS = 6L * 60 * 60 * 1000
 
     @Volatile
     var ringing: Boolean = false
@@ -51,7 +52,13 @@ object AlarmNotifications {
         )
     }
 
-    fun ringingNotification(context: Context, alarmId: Long, title: String, text: String): Notification {
+    fun ringingNotification(
+        context: Context,
+        alarmId: Long,
+        title: String,
+        text: String,
+        snoozeMinutes: Int = 10,
+    ): Notification {
         val fullScreen = PendingIntent.getActivity(
             context,
             alarmId.toInt(),
@@ -76,15 +83,22 @@ object AlarmNotifications {
             },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
+        val snoozeMinutesSafe = if (snoozeMinutes in listOf(5, 10, 15)) snoozeMinutes else 10
         val snooze = PendingIntent.getService(
             context,
             2000 + alarmId.toInt(),
             Intent(context, AlarmRingtoneService::class.java).apply {
                 action = AlarmRingtoneService.ACTION_SNOOZE
                 putExtra(AlarmScheduler.EXTRA_ALARM_ID, alarmId)
+                putExtra(AlarmRingtoneService.EXTRA_SNOOZE_MINUTES, snoozeMinutesSafe)
             },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
+        val snoozeLabel = when (snoozeMinutesSafe) {
+            5 -> context.getString(R.string.snooze_5)
+            15 -> context.getString(R.string.snooze_15)
+            else -> context.getString(R.string.snooze_10)
+        }
 
         return NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_stat_alarm)
@@ -95,7 +109,7 @@ object AlarmNotifications {
             .setOngoing(true)
             .setContentIntent(content)
             .setFullScreenIntent(fullScreen, true)
-            .addAction(0, context.getString(R.string.snooze), snooze)
+            .addAction(0, snoozeLabel, snooze)
             .addAction(0, context.getString(R.string.dismiss), dismiss)
             .build()
     }
@@ -112,7 +126,8 @@ object AlarmNotifications {
         }
         val (alarm, trigger) = next
         val triggerAt = trigger.toInstant().toEpochMilli()
-        if (AlarmPreferences.shouldHideUpcoming(context, alarm.id)) {
+        val lead = triggerAt - System.currentTimeMillis()
+        if (lead > UPCOMING_LEAD_MILLIS || AlarmPreferences.shouldHideUpcoming(context, alarm.id)) {
             cancelUpcoming(context)
             return
         }

@@ -20,6 +20,10 @@ data class AlarmEntity(
     val skipAfterMillis: Long = 0,
     /** If in the future, this alarm should fire at this time (snooze). */
     val snoozeUntilMillis: Long = 0,
+    /** Minutes to ring before auto-dismiss. Zero means keep ringing until dismissed. */
+    val autoDismissMinutes: Int = 0,
+    /** Minutes to snooze when Snooze is tapped. */
+    val snoozeMinutes: Int = 10,
 ) {
     fun repeatsOn(calendarDay: Int): Boolean {
         val bit = 1 shl (calendarDay - 1)

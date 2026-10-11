@@ -9,7 +9,7 @@
     <string name="turn_off">关闭</string>
     <string name="upcoming_section">通知</string>
     <string name="upcoming_notification">显示下一个闹钟</string>
-    <string name="upcoming_notification_hint">在通知栏显示下一个闹钟，以便在响铃前关闭通知或关掉闹钟。</string>
+    <string name="upcoming_notification_hint">在响铃前约 6 小时于通知栏显示下一个闹钟，以便关闭通知或关掉闹钟。</string>
     <string name="backup_section">备份</string>
     <string name="backup_hint">闹钟会保存到下载目录（shadowsiul-alarms.json）和 Google 备份。如果已开启备份，卸载重装后可以恢复。</string>
 
@@ -51,10 +51,17 @@
     <string name="vibrate">振动</string>
     <string name="ring_on_holidays">假日仍响铃</string>
     <string name="ring_on_holidays_hint">睡觉闹钟请打开此项。起床闹钟可保持关闭，以便联邦假日静音。</string>
+    <string name="auto_dismiss">自动关闭</string>
+    <string name="auto_dismiss_hint">如果未关闭或推迟，响铃这么久后会自动停止。</string>
+    <string name="auto_dismiss_off">关</string>
+    <string name="auto_dismiss_minutes">%1$d 分钟</string>
     <string name="save">保存</string>
     <string name="dismiss">关闭</string>
     <string name="snooze">稍后提醒</string>
+    <string name="snooze_hint">点按稍后提醒后，这个闹钟等待多久再响。</string>
+    <string name="snooze_5">推迟 5 分钟</string>
     <string name="snooze_10">推迟 10 分钟</string>
+    <string name="snooze_15">推迟 15 分钟</string>
     <string name="alarm_fallback">闹钟</string>
 
     <string name="options_title">选项</string>

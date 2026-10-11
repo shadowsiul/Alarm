@@ -9,7 +9,7 @@
     <string name="turn_off">Turn off</string>
     <string name="upcoming_section">Notification</string>
     <string name="upcoming_notification">Show next alarm</string>
-    <string name="upcoming_notification_hint">Keep the next alarm in the notification shade so you can dismiss it or turn it off before it rings.</string>
+    <string name="upcoming_notification_hint">Shows the next alarm in the notification shade about 6 hours before it rings so you can dismiss it or turn it off.</string>
     <string name="backup_section">Backup</string>
     <string name="backup_hint">Alarms are saved on this phone in Downloads (shadowsiul-alarms.json) and in your Google backup, so they can come back after uninstall if backup is on.</string>
 
@@ -51,10 +51,17 @@
     <string name="vibrate">Vibrate</string>
     <string name="ring_on_holidays">Ring on holidays</string>
     <string name="ring_on_holidays_hint">Turn this on for bedtime. Wake-up alarms can stay off so federal holidays stay silent.</string>
+    <string name="auto_dismiss">Auto dismiss</string>
+    <string name="auto_dismiss_hint">Stop ringing on its own after this long if you do not dismiss or snooze.</string>
+    <string name="auto_dismiss_off">Off</string>
+    <string name="auto_dismiss_minutes">%1$d min</string>
     <string name="save">Save</string>
     <string name="dismiss">Dismiss</string>
     <string name="snooze">Snooze</string>
+    <string name="snooze_hint">How long this alarm waits after you tap Snooze.</string>
+    <string name="snooze_5">Snooze 5 minutes</string>
     <string name="snooze_10">Snooze 10 minutes</string>
+    <string name="snooze_15">Snooze 15 minutes</string>
     <string name="alarm_fallback">Alarm</string>
 
     <string name="options_title">Options</string>
