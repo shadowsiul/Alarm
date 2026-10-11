@@ -1,44 +1,31 @@
 # Alarm
 
-Android alarm clock. Completely vibe-coded with Grok and Claude.
+An Android alarm clock. Completely vibe-coded with Grok and Claude.
 
-Version 1.5. Requires Android 8.0 (API 26) or later.
+Works on Android 8 and newer. Current version is 1.5.
 
-## What it does
+## Using it
 
-Set one-time or repeating alarms with a label, custom sound, and vibrate. Alarms fire with a lock-screen screen, sound, and notification so you can dismiss or snooze.
+Add alarms from the list. Each one can repeat on certain days or run once. You can set a label, sound, vibrate, snooze length (5, 10, or 15 minutes), and whether it should stop on its own after 10 or 15 minutes.
 
-Wake-up alarms stay silent on observed US federal holidays unless you turn on **Ring on holidays** (useful for bedtime alarms).
+When it rings, dismiss it or snooze. The first snooze is open. After that you have to solve a short math problem to snooze again.
 
-## Features
+By default, alarms stay quiet on US federal holidays. Turn on **Ring on holidays** for a bedtime alarm that should still go off.
 
-- Create, edit, enable/disable, and delete alarms
-- Repeat on chosen weekdays, every day, or once
-- Custom ringtone and vibrate
-- Per-alarm snooze length: 5, 10, or 15 minutes
-- First snooze is free; snoozing again requires a simple math question
-- Auto dismiss after 10 or 15 minutes, or leave it ringing until you stop it
-- Upcoming-alarm notification about 6 hours before it rings, with Dismiss and Turn off
-- US federal holiday calendar (OPM observed dates) and a holiday banner on those days
-- English, Spanish, and Chinese
-- Local backup to Downloads as `alarms-bk.json`, plus Google backup so alarms can return after reinstall
+About 6 hours before the next alarm, a notification appears so you can dismiss that time or turn the alarm off.
 
-## Build
+Menus are available in English, Spanish, and Chinese.
 
-From the project folder:
+## Saving your alarms
 
-```powershell
-.\gradlew.bat assembleDebug
-```
+Alarms live on the phone. Whenever they change, the app also writes `alarms-bk.json` to Downloads. After an uninstall, open the app once and it will try to load that file if the list is empty.
 
-APK output:
+If the phone has Google Backup turned on, Android may also restore the alarm database when you reinstall from the Play Store on the same account. That is automatic. There is no backup button in the app.
 
-`app\build\outputs\apk\debug\app-debug.apk`
+## Building
 
-Install on a connected device or emulator:
+1. In the project folder, run `.\gradlew.bat assembleDebug`
+2. The APK is `app\build\outputs\apk\debug\app-debug.apk`
+3. Or run `.\gradlew.bat installDebug` to install on a connected device
 
-```powershell
-.\gradlew.bat installDebug
-```
-
-Allow notifications and exact alarms when the app asks. Open it once after creating alarms so the backup file is written.
+Allow notifications and exact alarms when Android asks.
